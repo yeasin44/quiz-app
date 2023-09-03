@@ -128,9 +128,48 @@ let wrongCount = 0;
 let total = 0;
 let selectedAnswer;
 
+// Play again
+
+const playAgain = () => {
+  qIndex = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  total = 0;
+  showQuestion(qIndex);
+};
+
+play.addEventListener("click", () => {
+  resultScreen.style.display = "none";
+  gameScreen.style.display = "block";
+});
+
+// Display result
+
+const displayResult = () => {
+  resultScreen.style.display = "block";
+  gameScreen.style.display = "none";
+
+  resultScreen.querySelector(".correct").textContent = `
+  Correct Answer: ${correctCount}
+  `;
+
+  resultScreen.querySelector(".wrong").textContent = `
+  Wrong Answer: ${wrongCount}
+  `;
+
+  resultScreen.querySelector(".score").textContent = `
+  Score: ${(correctCount - wrongCount) * 10}
+  `;
+};
+
 // To display
 
 const showQuestion = (qNumber) => {
+  if (qNumber === data.length) {
+    displayResult();
+    alert(`You got ${(correctCount - wrongCount) * 10} points`);
+  }
+  selectedAnswer = null;
   // To display the questions
   question.textContent = data[qNumber].question;
 
@@ -154,9 +193,26 @@ const showQuestion = (qNumber) => {
 const selectAnswer = () => {
   answersContainer.querySelectorAll("input").forEach((el) => {
     el.addEventListener("click", (e) => {
-      selectedAnswer(e.target.value);
+      selectedAnswer = e.target.value;
     });
   });
 };
 
+// submit.addEventListener("click", () => {
+//   alert(`You got ${(correctCount - wrongCount) * 10} points`);
+// });
+
+const submitAnswer = () => {
+  submit.addEventListener("click", () => {
+    if (selectedAnswer !== null) {
+      selectedAnswer === "true" ? correctCount++ : wrongCount++;
+      qIndex++;
+      showQuestion(qIndex);
+    } else {
+      alert("Select an answer");
+    }
+  });
+};
+
 showQuestion(qIndex);
+submitAnswer();
